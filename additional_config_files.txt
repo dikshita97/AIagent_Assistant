@@ -1,0 +1,427 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend build
+frontend/build/
+frontend/.env.local
+
+# Uploaded files
+uploads/
+*.pdf
+*.mp3
+*.wav
+*.jpg
+*.png
+!tests/sample_data/*
+
+# Models (Whisper)
+*.pt
+
+
+# backend/pytest.ini
+
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = 
+    -v
+    --strict-markers
+    --tb=short
+    --cov=services
+    --cov-report=term-missing
+    --cov-report=html
+markers =
+    asyncio: marks tests as async
+    slow: marks tests as slow
+    integration: marks tests as integration tests
+
+
+# backend/.flake8
+
+[flake8]
+max-line-length = 100
+exclude = 
+    .git,
+    __pycache__,
+    venv,
+    env,
+    build,
+    dist,
+    .eggs
+ignore = E203, W503
+per-file-ignores =
+    __init__.py:F401
+
+
+# backend/pyproject.toml
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+
+# frontend/tailwind.config.js
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+
+# frontend/postcss.config.js
+
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+
+# frontend/.eslintrc.json
+
+{
+  "extends": [
+    "react-app"
+  ],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off"
+  }
+}
+
+
+# frontend/public/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Agentic Multi-Modal Processing System - Autonomous AI agent for processing text, images, PDFs, and audio"
+    />
+    <title>Agentic Multi-Modal System</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+
+
+# frontend/src/index.jsx
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+# frontend/src/index.css
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+# ARCHITECTURE.md
+
+# System Architecture
+
+## Overview
+
+The Agentic Multi-Modal Processing System follows a **microservices-inspired architecture** with clear separation of concerns. The system is designed to be scalable, maintainable, and production-ready.
+
+## Components
+
+### 1. Frontend Layer (React)
+**Responsibility**: User interface and interaction
+
+**Key Components**:
+- Chat interface for conversation-style interaction
+- File upload with drag-and-drop
+- Real-time message streaming
+- Error handling and user feedback
+
+**Technology Stack**:
+- React 18.2
+- Axios for HTTP requests
+- Lucide React for icons
+- CSS for styling
+
+### 2. API Layer (FastAPI)
+**Responsibility**: Request routing and orchestration
+
+**Endpoints**:
+- `POST /api/process` - Main processing endpoint
+- `GET /api/health` - Health check
+- `POST /api/estimate-cost` - Cost estimation (bonus)
+
+**Features**:
+- CORS handling
+- File validation
+- Error handling
+- Logging
+
+### 3. Intent Detection Service
+**Responsibility**: Analyze input and determine task type
+
+**Algorithm**:
+1. Keyword matching for explicit intents
+2. Pattern matching for code detection
+3. URL detection for YouTube
+4. Fallback to clarification when ambiguous
+
+**Intents Supported**:
+- Summarization
+- Sentiment Analysis
+- Code Explanation
+- Action Items
+- YouTube Transcript
+- Conversational
+- Needs Clarification
+
+### 4. File Processing Service
+**Responsibility**: Extract content from various file types
+
+**Processors**:
+- **Image Processor**: Tesseract OCR
+- **PDF Processor**: PyPDF2 + OCR fallback
+- **Audio Processor**: OpenAI Whisper
+
+**Features**:
+- Async processing
+- Error handling
+- Confidence scoring
+- Format detection
+
+### 5. Task Execution Service
+**Responsibility**: Execute tasks based on detected intent
+
+**Handlers**:
+- Summary Handler: 3-format output
+- Sentiment Handler: Label + confidence + justification
+- Code Handler: Purpose, logic, bugs, complexity
+- Action Items Handler: Structured task list
+- Clarification Handler: Ask questions
+- Conversational Handler: General Q&A
+
+**Integration**: Claude Sonnet 4 via Anthropic API
+
+## Data Flow
+
+```
+User Input → Frontend → API Gateway → Intent Detector
+                                            ↓
+                                    File Processor (if file)
+                                            ↓
+                                    Task Executor → Claude AI
+                                            ↓
+                                    Response Formatter
+                                            ↓
+                                    Frontend Display
+```
+
+## Scalability Considerations
+
+### Horizontal Scaling
+- Stateless API design
+- Load balancer ready
+- Database for session management (future)
+
+### Vertical Scaling
+- Async file processing
+- Task queuing system (future)
+- Caching layer (future)
+
+### Performance Optimization
+- Lazy loading of ML models
+- File size limits
+- Request rate limiting
+- Response streaming (future)
+
+## Security
+
+### Input Validation
+- File type checking
+- File size limits (10MB)
+- Content sanitization
+- SQL injection prevention (N/A - no DB)
+
+### API Security
+- API key management
+- CORS configuration
+- Rate limiting (future)
+- HTTPS in production
+
+### Data Privacy
+- No persistent storage of user data
+- Temporary file cleanup
+- No logging of sensitive content
+
+## Monitoring & Logging
+
+### Logging Levels
+- INFO: Normal operations
+- WARNING: Recoverable errors
+- ERROR: Failures requiring attention
+- DEBUG: Development info
+
+### Metrics (Future)
+- Request latency
+- Success/failure rates
+- API costs
+- File processing times
+
+## Future Enhancements
+
+### Multi-Agent Orchestration (Bonus)
+```
+Planner Agent → Task Queue → Executor Agent(s) → Aggregator
+```
+
+### Cost Optimization
+- Request caching
+- Response streaming
+- Model selection based on complexity
+
+### Advanced Features
+- Multi-language support
+- Custom model fine-tuning
+- Batch processing
+- WebSocket support for real-time updates
+
+
+# LICENSE
+
+MIT License
+
+Copyright (c) 2024 [Your Name]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
