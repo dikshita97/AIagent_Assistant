@@ -493,6 +493,9 @@ agentic-multimodal-app/
 
 ---
 
+<img width="1888" height="857" alt="image" src="https://github.com/user-attachments/assets/ddcaf762-dd71-44c9-a84c-3446f4bbd6fa" />
+
+
 ## 🙏 Acknowledgments
 
 - **Anthropic** for Claude AI API
