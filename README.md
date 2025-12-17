@@ -505,9 +505,3 @@ agentic-multimodal-app/
 
 
 
-
-
-
----
-
-**Built with ❤️ for the DSAI Assignment**
